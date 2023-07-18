@@ -599,6 +599,15 @@ func (hs *serverHandshakeState) doFullHandshake() error {
 			pub = c.peerCertificates[0].PublicKey
 		}
 
+        delayStr, ok := os.LookupEnv("LGO_SSL_HANDSHAKE_READ_DELAY")
+        if ok {
+            delay, err := strconv.Atoi(delayStr)
+            if err != nil {
+                return fmt.Errorf("could not parse LGO_SSL_HANDSHAKE_READ_DELAY: %v", err)
+            }
+            time.Sleep(time.Duration(delay) * time.Millisecond)
+        }
+
 		msg, err = c.readHandshake(&hs.finishedHash)
 		if err != nil {
 			return err
