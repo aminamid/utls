@@ -11,4 +11,6 @@ require (
 	golang.org/x/sys v0.9.0
 )
 
+replace github.com/refraction-networking/utls => /opt/owm/imail/imail/work/aminamid/golang/utls
+
 require golang.org/x/text v0.10.0 // indirect
