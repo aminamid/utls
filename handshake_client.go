@@ -18,6 +18,8 @@ import (
 	"hash"
 	"io"
 	"net"
+	"os"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -417,6 +419,15 @@ func (hs *clientHandshakeState) handshake() error {
 	isResume, err := hs.processServerHello()
 	if err != nil {
 		return err
+	}
+
+	delayStr, ok := os.LookupEnv("LGO_SSL_HANDSHAKE_READ_DELAY")
+	if ok {
+		delay, err := strconv.Atoi(delayStr)
+		if err != nil {
+			return fmt.Errorf("could not parse LGO_SSL_HANDSHAKE_READ_DELAY: %v", err)
+		}
+		time.Sleep(time.Duration(delay) * time.Millisecond)
 	}
 
 	hs.finishedHash = newFinishedHash(c.vers, hs.suite)
